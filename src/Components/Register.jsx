@@ -30,10 +30,6 @@ const Register = ({ setToggleLogin }) => {
       const data = await res.json();
 
       if (data.token) {
-        // in case there is an old token in the browser, remove it
-        localStorage.removeItem("token");
-        // set the new user's JWT token in the browser
-        localStorage.setItem("token", data.token);
         setToggleLogin(true);
         navigate("/dashboard");
       }

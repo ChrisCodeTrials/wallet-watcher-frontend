@@ -2,19 +2,40 @@ import { useEffect, useState } from "react";
 import io from "socket.io-client";
 const socket = io("http://localhost:3003");
 
+
 const Crypto = () => {
   const [cryptos, setCryptos] = useState([]);
-  const [toggle, setToggle] = useState(false);
+  const [watchlist, setWatchlist] = useState([]);
 
   useEffect(() => {
     socket.on("cryptoUpdates", (cryptoUpdates) => {
       setCryptos(cryptoUpdates.data.tokens);
-      setToggle(!toggle);
     });
 
     return () => {
       socket.off("cryptoUpdates");
     };
+  }, []);
+
+
+  useEffect(() => { 
+    const loadCoins = async () => {
+
+        const options = {
+            method: "GET",
+            headers: {
+                "x-chain": "ethereum",
+                "X-API-KEY": "79434a86bf46406cb9d7788bb57e0a22",
+            },
+        };
+        const res = await fetch(
+            'https://public-api.birdeye.so/defi/tokenlist?sort_by=v24hUSD&sort_type=desc&offset=100&limit=30', options
+        );
+        const coins = await res.json()
+        console.log(coins)
+        setCryptos(coins.data.tokens)
+    }
+    loadCoins()
   }, []);
 
   return (
@@ -32,13 +53,11 @@ const Crypto = () => {
         style={{
           marginBottom: "50px",
           marginTop: 10,
-          backgroundColor: toggle ? "yellow" : "lime",
           padding: 5,
         }}
       >
         Last Updated: {new Date().toLocaleTimeString()}
       </h2>
-      {console.log(cryptos)}
       <div
         style={{
           display: "grid",
@@ -52,9 +71,10 @@ const Crypto = () => {
             <div key={crypto.address}>
               <img src={`${crypto.logoURI}`} alt={crypto.name} />
               <h3>Name: {crypto.name}</h3>
-              <p>Liquidity: {crypto.liquidity}</p>
-              <p>Change: {crypto.v24hChangePercent}</p>
-              <p>Price: {crypto.v24hUSD}</p>
+              <p>Symbol: {crypto.symbol}</p>
+              <p>{crypto.v24hChangePercent ? `24h Price Change: ${crypto.v24hChangePercent}`: null }</p>
+              <p>Liquidity: ${crypto.liquidity > 1000000 ? `${(crypto.liquidity / 1000000).toFixed(2)}M` : crypto.liquidity > 1000 ? `${(crypto.liquidity / 1000).toFixed(2)}K` : crypto.liquidity}</p>
+              {}<button onClick={() => addToWatchlist(crypto.address)}>Add to Watchlist</button>
             </div>
           ))}
       </div>

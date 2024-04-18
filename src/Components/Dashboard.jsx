@@ -1,4 +1,7 @@
 import { useOutletContext } from "react-router-dom";
+import Watchlist from "./Watchlist";
+import { useParams } from "react-router-dom";
+import { useEffect } from "react";
 
 const Dashboard = ({ handleLogout }) => {
   const { user } = useOutletContext(); // Access user data provided by the Outlet's context
@@ -10,10 +13,15 @@ const Dashboard = ({ handleLogout }) => {
       <h2>Dashboard Component</h2>
 
       {user && (
+        <>
         <h1>
           Welcome, {user.username[0].toUpperCase()}
           {user.username.slice(1).toLowerCase()}
         </h1>
+        <section>
+          <Watchlist userId={user.id}/>
+        </section>
+        </>
       )}
 
       {/* Use user data as needed, for example: */}

@@ -1,56 +1,29 @@
-import { useEffect, useState } from "react";
+import React from "react";
+import { NavLink } from "react-router-dom";
 
-import { Link } from "react-router-dom";
-
-const URL = import.meta.env.VITE_BASE_URL;
-
-const NavBar = ({ toggleLogin, handleLogout }) => {
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    if (!toggleLogin) setUser(null);
-
-    if (toggleLogin) {
-      const token = localStorage.getItem("token");
-      if (token) {
-        fetch(`${URL}/api/auth/user`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            setUser(data.user);
-          })
-          .catch((error) => console.error("Error fetching user:", error));
-      }
-    }
-  }, [toggleLogin]);
-
+const CustomNavbar = ({ logUser }) => {
   return (
-    <div className="navbar-container">
-      <h1>Navbar Component</h1>
-      <h2>
-        <Link style={{ textDecoration: "none" }} to="/">
-          Your image or Logo (click here to go to Landing Page)
-        </Link>
-      </h2>
-
-      {!toggleLogin ? (
-        <Link to={"/login"}>
-          <span>Login</span>
-        </Link>
-      ) : (
-        <div>
-          {user && <span>Hello, {user.username.toUpperCase()}? | </span>}
-          <Link onClick={handleLogout}>
-            <span>Logout</span>
-          </Link>
-        </div>
-      )}
-      <hr />
-    </div>
+    <nav className="custom-navbar">
+      <NavLink to="/" >
+        Wallet Watcher
+      </NavLink>
+      <ul>
+        {logUser ? (
+          <li>
+            <NavLink to="/dashboard" >
+              Dashboard
+            </NavLink>
+          </li>
+        ) : (
+          <li className="nav-item">
+            <NavLink to="/login">
+              Login
+            </NavLink>
+          </li>
+        )}
+      </ul>
+    </nav>
   );
 };
 
-export default NavBar;
+export default CustomNavbar;

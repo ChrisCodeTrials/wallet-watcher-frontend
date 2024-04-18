@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 
 const URL = import.meta.env.VITE_BASE_URL;
 
-const Login = ({ setToggleLogin }) => {
+const Login = ({ setLogUser }) => {
   const [user, setUser] = useState({ username: "", password: "" });
   const navigate = useNavigate();
 
@@ -33,7 +33,8 @@ const Login = ({ setToggleLogin }) => {
 
       if (data.token) {
         localStorage.setItem("token", data.token);
-        await setToggleLogin(true);
+        localStorage.setItem("userId", data.userId);
+        setLogUser(true)
         navigate("/dashboard");
       } else {
         console.log("JWT Login Failed");

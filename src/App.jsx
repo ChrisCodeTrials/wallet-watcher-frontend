@@ -10,12 +10,13 @@ import LandingPage from "./Components/LandingPage";
 
 function App() {
   const navigate = useNavigate();
-  const [toggleLogin, setToggleLogin] = useState(false);
+  const [logUser, setLogUser] = useState(false)
+
 
   async function handleLogout() {
     localStorage.removeItem("token");
 
-    await setToggleLogin(false);
+    await setLogUser(false);
 
     navigate("/login");
   }
@@ -23,27 +24,25 @@ function App() {
   return (
     <>
       <NavBar
-        handleLogout={handleLogout}
-        toggleLogin={toggleLogin}
-        setToggleLogin={setToggleLogin}
+      logUser={logUser}
       />
 
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route
           path="/login"
-          element={<Login setToggleLogin={setToggleLogin} />}
+          element={<Login setLogUser={setLogUser} />}
         />
         <Route
           path="/register"
-          element={<Register setToggleLogin={setToggleLogin} />}
+          element={<Register setLogUser={setLogUser}  />}
         />
 
         <Route element={<ProtectedRoute />}>
           {/* Place protected routes here */}
           <Route
             path="/dashboard"
-            element={<Dashboard handleLogout={handleLogout} />}
+            element={<Dashboard handleLogout={handleLogout}/>}
           />
         </Route>
       </Routes>
